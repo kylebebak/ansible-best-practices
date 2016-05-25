@@ -83,7 +83,7 @@ Manejar __env_vars__ puede ser muy doloroso:
     replace_logrotate: true
 ~~~
 
-- Tenemos varios templates de Ansible que se pasan a este role. [Aquí hay el template](https://github.com/asistia/backend/tree/Ansible-talk/deploy/deploy/playbooks/deploy/templates/gunicorn.conf.j2) para el script que nos deja controlar a `gunicorn` usando upstart.
+- Tenemos varios templates de Ansible que se pasan a este role. [Aquí hay el template](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/upstart-gunicorn.conf.j2) para el script que nos deja controlar a `gunicorn` usando upstart.
 - El role convierte los templates en scripts de upstart y los copia a `/etc/init` del target machine, [y también configura logrotate](http://www.linuxcommand.org/man_pages/logrotate8.html).
   - [roles/upstart/templates/upstart-logrotate.j2](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/upstart-logrotate.j2)
 - Con este setup, estos servicios se pueden reiniciar por Ansible fácilmente, los logs de todos están en el mismo lugar, `/var/log/upstart/{name_of_service}.log`, y los logs se rotan.
@@ -91,7 +91,7 @@ Manejar __env_vars__ puede ser muy doloroso:
 
 ## Demo
 
-Para no tener que memorizar los comandos de `ansible-playbook`, o copiar y pegarlos de un `cookbook` grande, torpe, y sujeto a cambios frecuentes, usamos un programa, [ansible-command-generator.py](examples/ansible-command-generator.py), que nos genera los comandos.
+Para no tener que memorizar los comandos de `ansible-playbook`, o copiar y pegarlos de un `cookbook` grande, torpe, y sujeto a cambios frecuentes, usamos un programa, [ansible-command-generator.py](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/ansible-command-generator.py), que nos genera los comandos.
 
 Como ejemplo mostraremos un deploy a los servidores de `webapp` y `message` al ambiente de `staging`, especificando el branch que queremos deployar. Después reiniciamos los servicios en estos servidores.
 
@@ -106,4 +106,4 @@ El programa usa una librería de Python que escribí, [questionnaire](https://gi
 - Usar `tags` para no tener que correr todo dentro de un role o playbook, sino poder hacer un pick and choose de tasks y roles que quieres correr at runtime
 - Manejar servicios y deployment a través de Ansible
 - Se creativo. Ansible tiene mucho power y puede tener un gran impacto en tu workflow
-- <http://docs.Ansible.com/Ansible/playbooks_best_practices.html>
+- <http://docs.ansible.com/ansible/playbooks_best_practices.html>
