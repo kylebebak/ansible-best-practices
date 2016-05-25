@@ -28,9 +28,9 @@ Tu código de Ansible define toda la configuración de tus servidores. Para tu p
 Con los `group_vars` de Ansible, se definen tus __variables__ en un sólo lugar:
 
 - __env_vars__
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/group_vars/development.yml>
+  - [group_vars/development.yml](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/development.yml])
 - __dependencias/packages__ (del sistema, PyPI, Node...)
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/group_vars/backend.yml>
+  - [group_vars/backend.yml](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/backend.yml])
 - rutas (al directorio de tu aplicación, a tu virtualenv, a static files, a log files...)
 - ...
 
@@ -44,7 +44,7 @@ Muchos servidores se agrupan de forma natural:
 - __por ambiente__: development vs. staging vs. production
 - __por función__: api vs. message vs. database...
 
-Los `inventory` files te permiten apuntar a grupos, y heredar `group_vars` para que éstos no se tienen que definir más de una vez. <https://github.com/asistia/backend/tree/Ansible-talk/deploy/inventories/staging>
+Los `inventory` files te permiten apuntar a grupos, y heredar `group_vars` para que éstos no se tienen que definir más de una vez. Ve este ejemplo: [invetories/staging](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/staging)
 
 
 
@@ -56,15 +56,15 @@ Los `inventory` files te permiten apuntar a grupos, y heredar `group_vars` para 
 Manejar __env_vars__ puede ser muy doloroso:
 
 - Cómo asegurar que los mismos se deployan a todos los servidores? Combinar y setear tus __env_vars__ en el [Ansible environment keyword](http://docs.ansible.com/ansible/playbooks_environment.html), y hacer un rol que lee éstos, crea un archivo de `.env`, y lo copia al target machine. Así sólo tienes que definir __env_vars__ en tus `group_vars`, y los mismos que usan los playbooks de Ansible estarán en tus servidores.
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/roles/env_vars/tasks/main.yml>
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/roles/env_vars/templates/environment.j2>
+  - [roles/env_vars/tasks/main.yml](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/main.yml])
+  - [roles/env_vars/templates/environment.j2](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/environment.j2])
 - Cómo asegurar que están encriptados, para que se puedan meter a version control y así compartirse de forma eficiente con todos los miembros del equipo? Meter __env_vars__ secretos en archivos de __group_vars__ encriptados, usando, por ejemplo, [Ansible Vault](http://docs.ansible.com/ansible/playbooks_vault.html). Sólo tienes que desencriptarlos cuando quieres cambiarlos, o agregar más variables secretos. Puedes usar un Git hook de [pre-commit](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) para asegurar que estos los archivos con variables secretos no se pueden meter a version control cuando no están encriptados.
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/inventories/staging>
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/group_vars/all-secret.template.yml>
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/group_vars/all-secret.yml>
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/hooks/pre-commit>
+  - [inventories/staging](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/staging])
+  - [group_vars/all-secret.template.yml](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/all-secret.template.yml])
+  - [group_vars/all-secret.yml](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/all-secret.yml])
+  - [hooks/pre-commit](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/pre-commit])
 - Cómo hacerlo para que se haga de forma automática, para que nunca pienses en los __env_vars__ otra vez? Definir la ruta a `.env` en el target machine con Ansible, y usar la misma ruta en tus scripts de `upstart` para tus servicios puedan sourcear `.env` cuando corren.
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/playbooks/deploy/templates/upstart-gunicorn.conf.j2>
+  - [templates/upstart-gunicorn.conf.j2](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/upstart-gunicorn.conf.j2])
 
 
 ### Services (bajo Upstart, con logging)
@@ -84,7 +84,7 @@ Manejar __env_vars__ puede ser muy doloroso:
 
 - Tenemos varios templates de Ansible que se pasan a este role. [Aquí hay el template](https://github.com/asistia/backend/tree/Ansible-talk/deploy/deploy/playbooks/deploy/templates/gunicorn.conf.j2) para el script que nos deja controlar a `gunicorn` usando upstart.
 - El role convierte los templates en scripts de upstart y los copia a `/etc/init` del target machine, [y también configura logrotate](http://www.linuxcommand.org/man_pages/logrotate8.html).
-  - <https://github.com/asistia/backend/tree/Ansible-talk/deploy/roles/upstart/tasks/main.yml>- <https://github.com/asistia/backend/tree/Ansible-talk/deploy/roles/upstart/templates/upstart-logrotate.j2>
+  - [roles/upstart/templates/upstart-logrotate.j2](https://github.com/kylebebak/ansible-best-practices/blob/master/resources/upstart-logrotate.j2])
 - Con este setup, estos servicios se pueden reiniciar por Ansible fácilmente, los logs de todos están en el mismo lugar, `/var/log/upstart/{name_of_service}.log`, y los logs se rotan.
 
 
