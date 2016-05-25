@@ -1,5 +1,5 @@
 # Ansible para "Configuration Management"
-## 25-05-2016
+## 2016-05-24
 
 Ansible es un DSL (domain specific language) escrito en Python que ayuda a configurar servidores, deployar código, manejar servicios, etc. Archivos de Ansible se escriben en YAML, con soporte para templating via Jinja2. No se instala el ejecutable, `ansible-playbook`, en los target machines. Se ejecuta en tu máquina, traduce el YAML a shell commands, y los ejecuta en los target machines a través de SSH.
 
